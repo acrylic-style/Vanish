@@ -18,9 +18,7 @@ import java.util.UUID;
 
 public class Vanish extends JavaPlugin implements Listener {
     public static Vanish instance;
-    public Vanish() {
-        instance = this;
-    }
+    public Vanish() { instance = this; }
 
     public static ConfigProvider config = null;
     public static CollectionList<UUID> vanishedPlayers = new CollectionList<>();
@@ -28,7 +26,7 @@ public class Vanish extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         config = ConfigProvider.getConfig("./plugins/Vanish/config.yml");
-        vanishedPlayers = ICollectionList.asList(config.getStringList("vanishedPlayers")).map(UUID::fromString);
+        vanishedPlayers = (CollectionList<UUID>) ICollectionList.asList(config.getStringList("vanishedPlayers")).map(UUID::fromString);
         TomeitoAPI.registerCommand("vanish", new VanishCommand());
         Bukkit.getPluginManager().registerEvents(this, this);
     }

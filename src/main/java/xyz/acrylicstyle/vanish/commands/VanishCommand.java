@@ -2,29 +2,34 @@ package xyz.acrylicstyle.vanish.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.acrylicstyle.shared.BaseMojangAPI;
-import xyz.acrylicstyle.tomeito_api.command.PlayerOpCommandExecutor;
+import xyz.acrylicstyle.tomeito_api.command.OpCommandExecutor;
 import xyz.acrylicstyle.vanish.Vanish;
 
 import java.util.UUID;
 
-public class VanishCommand extends PlayerOpCommandExecutor {
+public class VanishCommand extends OpCommandExecutor {
     @Override
-    public void onCommand(Player player, String[] args) {
+    public void onCommand(@NotNull CommandSender sender, String[] args) {
         Bukkit.getScheduler().runTaskAsynchronously(Vanish.instance, () -> {
-            Player p = player;
+            Player p = sender instanceof Player ? (Player) sender : null;
             boolean online = true;
-            UUID uuid = p.getUniqueId();
-            String name = p.getName();
+            UUID uuid = p == null ? null : p.getUniqueId();
+            String name = p == null ? null : p.getName();
+            if (uuid == null && args.length == 0) {
+                sender.sendMessage(ChatColor.RED + "プレイヤーを指定してください。");
+                return;
+            }
             if (args.length != 0) {
                 p = Bukkit.getPlayerExact(args[0]);
                 if (p == null) {
                     uuid = BaseMojangAPI.getUniqueId(args[0]);
                     if (uuid == null) {
-                        player.sendMessage(ChatColor.RED + "正しいプレイヤーを指定してください。");
+                        sender.sendMessage(ChatColor.RED + "正しいプレイヤーを指定してください。");
                         return;
                     }
                     name = args[0];
@@ -44,7 +49,7 @@ public class VanishCommand extends PlayerOpCommandExecutor {
                         if (!p2.canSee(finalP)) p2.showPlayer(Vanish.instance, finalP);
                     }));
                 }
-                player.sendMessage(ChatColor.GREEN + finalN + "の姿を表示するようにしました。");
+                sender.sendMessage(ChatColor.GREEN + finalN + "の姿を表示するようにしました。");
             } else {
                 Vanish.vanishedPlayers.add(finalU);
                 if (online) {
@@ -52,7 +57,7 @@ public class VanishCommand extends PlayerOpCommandExecutor {
                         if (p2.canSee(finalP)) p2.hidePlayer(Vanish.instance, finalP);
                     }));
                 }
-                player.sendMessage(ChatColor.GREEN + finalN + "の姿を非表示にしました。");
+                sender.sendMessage(ChatColor.GREEN + finalN + "の姿を非表示にしました。");
             }
         });
     }
