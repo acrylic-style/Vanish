@@ -42,12 +42,16 @@ public class Vanish extends JavaPlugin implements Listener {
             Player player = Bukkit.getPlayer(uuid);
             if (player != null) e.getPlayer().hidePlayer(this, player);
         });
-        if (vanishedPlayers.contains(e.getPlayer().getUniqueId())) e.getRecipients().clear();
+        if (vanishedPlayers.contains(e.getPlayer().getUniqueId())) {
+            e.setJoinMessage(null);
+            try {
+                e.getRecipients().clear();
+            } catch (NoSuchMethodError ignore) {} // normal thing doesn't support it
+        }
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (vanishedPlayers.contains(e.getPlayer().getUniqueId())) {
-                    e.getRecipients().clear();
                     Bukkit.getOnlinePlayers().forEach(player -> player.hidePlayer(Vanish.this, e.getPlayer()));
                 } else {
                     Bukkit.getOnlinePlayers().forEach(player -> player.showPlayer(Vanish.this, e.getPlayer()));
@@ -58,6 +62,11 @@ public class Vanish extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
-        if (vanishedPlayers.contains(e.getPlayer().getUniqueId())) e.getRecipients().clear();
+        if (vanishedPlayers.contains(e.getPlayer().getUniqueId())) {
+            e.setQuitMessage(null);
+            try {
+                e.getRecipients().clear();
+            } catch (NoSuchMethodError ignore) {}
+        }
     }
 }
