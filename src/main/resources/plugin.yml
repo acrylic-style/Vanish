@@ -1,9 +1,10 @@
 name: "Vanish"
 main: xyz.acrylicstyle.vanish.Vanish
 version: "1.0"
-api-version: "1.15"
+api-version: "1.13"
 commands:
   vanish:
     description: ""
+    permission: vanish.vanish
 depend:
   - TomeitoLib

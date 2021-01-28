@@ -2,19 +2,20 @@ package xyz.acrylicstyle.vanish.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.acrylicstyle.shared.BaseMojangAPI;
-import xyz.acrylicstyle.tomeito_api.command.OpCommandExecutor;
 import xyz.acrylicstyle.vanish.Vanish;
 
 import java.util.UUID;
 
-public class VanishCommand extends OpCommandExecutor {
+public class VanishCommand implements CommandExecutor {
     @Override
-    public void onCommand(@NotNull CommandSender sender, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         Bukkit.getScheduler().runTaskAsynchronously(Vanish.instance, () -> {
             Player p = sender instanceof Player ? (Player) sender : null;
             boolean online = true;
@@ -60,6 +61,7 @@ public class VanishCommand extends OpCommandExecutor {
                 sender.sendMessage(ChatColor.GREEN + finalN + "の姿を非表示にしました。");
             }
         });
+        return true;
     }
 
     public static void run(Runnable runnable) {
