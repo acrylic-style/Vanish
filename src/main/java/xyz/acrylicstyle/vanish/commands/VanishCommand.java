@@ -25,7 +25,7 @@ public class VanishCommand implements CommandExecutor {
                 sender.sendMessage(ChatColor.RED + "プレイヤーを指定してください。");
                 return;
             }
-            if (args.length != 0) {
+            if (args.length != 0 && sender.isOp()) {
                 p = Bukkit.getPlayerExact(args[0]);
                 if (p == null) {
                     uuid = BaseMojangAPI.getUniqueId(args[0]);
